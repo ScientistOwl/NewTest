@@ -1,0 +1,87 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f0fdf4;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(46, 125, 50, 0.08);
+}
+
+.heroImage {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.content {
+  padding: 0 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2e7d32;
+}
+
+.description {
+  font-size: 1.2rem;
+  color: #4b6b4b;
+  margin-bottom: 1rem;
+}
+
+.descriptionFull {
+  font-size: 1rem;
+  color: #5c7c5c;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  background-color: #e6f4ea;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #81c784;
+}
+
+.rarity {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #388e3c;
+}
+
+/* Цвета по редкости */
+.bronze {
+  color: #a67c52;
+}
+
+.iron {
+  color: #8e8e8e;
+}
+
+.silver {
+  color: #b0b0b0;
+}
+
+.gold {
+  color: #fbc02d;
+}
+
+.mythril {
+  color: #00bcd4;
+}
+.backButton {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #f0f0f0;
+  color: #333;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+}
