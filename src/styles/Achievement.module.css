@@ -7,6 +7,13 @@
   box-shadow: 0 0 12px rgba(46, 125, 50, 0.08);
 }
 
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
 .heroImage {
   width: 100%;
   max-height: 400px;
@@ -14,6 +21,31 @@
   border-radius: 12px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: opacity 0.5s ease;
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 2;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.letterReveal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 8rem;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2rem;
+  border-radius: 1rem;
+  user-select: none;
+  z-index: 1;
 }
 
 .content {
@@ -50,7 +82,6 @@
   color: #388e3c;
 }
 
-/* Цвета по редкости */
 .bronze {
   color: #a67c52;
 }
@@ -70,6 +101,7 @@
 .mythril {
   color: #00bcd4;
 }
+
 .backButton {
   display: inline-block;
   margin-top: 2rem;

@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { achievements } from "../data/achievements";
 import Card from "../components/Card";
 import Pagination from "../components/Pagination";
@@ -14,10 +15,48 @@ const rarityOrder = {
   mythril: 5,
 };
 
+function seededShuffle(array, seed) {
+  const result = [...array];
+  let currentIndex = result.length;
+  let random;
+
+  while (currentIndex !== 0) {
+    seed = (seed * 9301 + 49297) % 233280;
+    random = seed / 233280;
+    const randomIndex = Math.floor(random * currentIndex);
+    currentIndex--;
+
+    [result[currentIndex], result[randomIndex]] = [
+      result[randomIndex],
+      result[currentIndex],
+    ];
+  }
+
+  return result;
+}
+
 function Home() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const sortMode = searchParams.get("sort") || "random";
+  const seedParam = parseInt(searchParams.get("seed") || "1");
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortMode, setSortMode] = useState("random");
-  const [randomKey, setRandomKey] = useState(0); // ключ для обновления рандома
+  const [randomSeed, setRandomSeed] = useState(seedParam);
+
+  useEffect(() => {
+    const pageParam = parseInt(searchParams.get("page") || "1");
+    setCurrentPage(pageParam);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const scrollY = sessionStorage.getItem("scrollY");
+    if (scrollY) {
+      window.scrollTo(0, parseInt(scrollY));
+      sessionStorage.removeItem("scrollY");
+    }
+  }, []);
 
   const sortedAchievements = useMemo(() => {
     const copy = [...achievements];
@@ -27,9 +66,9 @@ function Home() {
     } else if (sortMode === "desc") {
       return copy.sort((a, b) => rarityOrder[b.rarity] - rarityOrder[a.rarity]);
     } else {
-      return copy.sort(() => Math.random() - 0.5);
+      return seededShuffle(copy, randomSeed);
     }
-  }, [sortMode, randomKey]);
+  }, [sortMode, randomSeed]);
 
   const totalPages = Math.ceil(sortedAchievements.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -39,11 +78,32 @@ function Home() {
   );
 
   const handleSortChange = (value) => {
-    setSortMode(value);
-    setCurrentPage(1);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("sort", value);
+    newParams.set("page", "1");
+
     if (value === "random") {
-      setRandomKey((prev) => prev + 1); // триггерим пересортировку
+      const newSeed = Date.now();
+      newParams.set("seed", newSeed.toString());
+      setRandomSeed(newSeed);
+    } else {
+      newParams.delete("seed");
     }
+
+    setSearchParams(newParams);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", page.toString());
+    setSearchParams(newParams);
+    setCurrentPage(page);
+  };
+
+  const handleCardClick = (id) => {
+    sessionStorage.setItem("scrollY", window.scrollY.toString());
+    navigate(`/achievement/${id}`);
   };
 
   return (
@@ -55,7 +115,7 @@ function Home() {
           не умею поздравлять там счастья здоровья и тд поэтому мучайся и сиди
           читай.
         </p>
-        <p>Ps. все карточки кликабельные</p>
+        <p>Ps. все карточки кликабельные, а также есть пасхалка, но где ?</p>
         <div className={styles.filter}>
           <select
             value={sortMode}
@@ -76,6 +136,7 @@ function Home() {
             title={item.title}
             description={item.description}
             rarity={item.rarity}
+            onClick={() => handleCardClick(item.id)}
           />
         ))}
       </div>
@@ -83,7 +144,7 @@ function Home() {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );
